@@ -5,52 +5,54 @@ class ISBN13
 
   class InvalidNumberFormat < Exception; end
 
-  def self.check(number)
+  class << self
+    def calculate(number)
 
-    validate_input_format!(number)
+      validate_input_format!(number)
 
-    # Append the end digit to number
-    "#{number}#{get_end_digit(number)}"
-  end
-
-  private
-
-  # Take each digit, from left to right and multiply them alternatively by 1 and 3
-  # and sum those numbers
-  def self.sum_digits_with_multiplier(number)
-    multiplier = PRIMARY_MULTIPLIER
-
-    number.each_char.reduce(0) do |acc, char, a|
-      n = Integer(char)
-
-      acc       += n * multiplier
-      multiplier = alternate_multiplier(multiplier)
-
-      acc
+      # Append the end digit to number
+      "#{number}#{get_end_digit(number)}"
     end
-  end
 
-  def self.alternate_multiplier(current_multiplier)
-    current_multiplier == PRIMARY_MULTIPLIER ?
-      SECONDARY_MULTIPLIER :
-      PRIMARY_MULTIPLIER
-  end
+    private
 
-  def self.get_end_digit(number)
-    sum = sum_digits_with_multiplier(number)
+    # Take each digit, from left to right and multiply them alternatively by 1 and 3
+    # and sum those numbers
+    def sum_digits_with_multiplier(number)
+      multiplier = PRIMARY_MULTIPLIER
 
-    # Take mod 10 of the summed figure
-    digit = sum % 10
+      number.each_char.reduce(0) do |acc, char, a|
+        n = Integer(char)
 
-    # Subtract 10 and if the end number is 10, make it 0
-    10 - digit
-  end
+        acc       += n * multiplier
+        multiplier = alternate_multiplier(multiplier)
 
-  def self.validate_input_format!(number)
-    raise InvalidNumberFormat, "only numbers must be given" unless number =~ /\d+/
+        acc
+      end
+    end
 
-    unless number.length == NUMBER_LENGTH
-      raise InvalidNumberFormat, "incorrect length"
+    def alternate_multiplier(current_multiplier)
+      current_multiplier == PRIMARY_MULTIPLIER ?
+        SECONDARY_MULTIPLIER :
+        PRIMARY_MULTIPLIER
+    end
+
+    def get_end_digit(number)
+      sum = sum_digits_with_multiplier(number)
+
+      # Take mod 10 of the summed figure
+      digit = sum % 10
+
+      # Subtract 10 and if the end number is 10, make it 0
+      10 - digit
+    end
+
+    def validate_input_format!(number)
+      raise InvalidNumberFormat, "only numbers must be given" unless number =~ /\d+/
+
+      unless number.length == NUMBER_LENGTH
+        raise InvalidNumberFormat, "incorrect length"
+      end
     end
   end
 end
