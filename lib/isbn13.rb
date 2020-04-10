@@ -1,9 +1,15 @@
 class ISBN13
   PRIMARY_MULTIPLIER    = 1
   SECONDARY_MULTIPLIER  = 3
+  NUMBER_LENGTH         = 12
+
+  class InvalidNumberFormat < Exception; end
 
   def self.check(number)
-    # Append the digit to number
+
+    validate_input_format!(number)
+
+    # Append the end digit to number
     "#{number}#{get_end_digit(number)}"
   end
 
@@ -38,5 +44,13 @@ class ISBN13
 
     # Subtract 10 and if the end number is 10, make it 0
     10 - digit
+  end
+
+  def self.validate_input_format!(number)
+    raise InvalidNumberFormat, "only numbers must be given" unless number =~ /\d+/
+
+    unless number.length == NUMBER_LENGTH
+      raise InvalidNumberFormat, "incorrect length"
+    end
   end
 end
