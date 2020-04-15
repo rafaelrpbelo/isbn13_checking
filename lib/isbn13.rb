@@ -21,7 +21,7 @@ class ISBN13
     def sum_digits_with_multiplier(number)
       multiplier = PRIMARY_MULTIPLIER
 
-      number.each_char.reduce(0) do |acc, char, a|
+      number.each_char.reduce(0) do |acc, char|
         n = Integer(char)
 
         acc       += n * multiplier
